@@ -29,7 +29,6 @@
 
 LANG="C"
 
-
 EXAMPLES=example.efi gfx_example.efi disk_example.efi
 COMMON = glue/$(ARCH)/relocation_func.o glue/$(ARCH)/start_func.o
 
@@ -51,7 +50,6 @@ ifneq ($(ARCH),x86_64)
 endif
 
 INCDIR := headers
-
 
 CFLAGS=-I. -I$(INCDIR) -I$(INCDIR)/$(ARCH) \
 		-DGNU_EFI_USE_MS_ABI -fPIC -fshort-wchar -ffreestanding \
@@ -78,10 +76,12 @@ gfx_example.so: $(COMMON) gfx_example.o
 disk_example.so: $(COMMON) disk_example.o
 
 clean:
-	rm -f $(EXAMPLES) *.so $(COMMON) example.o gfx_example.o disk_example.o
+	rm -f $(EXAMPLES) *.so $(COMMON) example.o gfx_example.o disk_example.o hd
 
-run:
-	cp *.efi hd/
-	qemu-system-x86_64 -enable-kvm -L . -hda fat:hd -hdc hd.image
+run: $(EXAMPLES)
+	mkdir -p hd/EFI/BOOT
+	cp *.efi hd/EFI/BOOT/
+	cp example.efi hd/EFI/BOOT/BOOTX64.EFI
+	qemu-system-x86_64 -bios /usr/share/OVMF/OVMF_CODE.fd -drive format=raw,file=fat:rw:hd 
 
 go: all run
