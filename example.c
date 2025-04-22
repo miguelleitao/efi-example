@@ -35,7 +35,7 @@
 #include "efierr.h"
 
 
-static CHAR16 *exampleText = L"Example EFI Application. Press any key!";
+static CHAR16 *exampleText = L"\nExample EFI Application. \n\n\rPress any key!";
 
 /**
  * efi_main - The entry point for the EFI application
